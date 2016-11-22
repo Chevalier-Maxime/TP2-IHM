@@ -33,13 +33,17 @@ public class ThreaDownload extends Thread implements PropertyChangeListener{
 	
 	public void run()
 	{
-		try {
+		
+		donelaudeur.execute();
+		
+/*		try {
 			donelaudeur.download();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			jpb.setBackground(Color.RED);
 			e.printStackTrace();
 		}
+		*/
 	}
 	
 }
