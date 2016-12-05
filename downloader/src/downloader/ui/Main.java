@@ -1,5 +1,6 @@
 package downloader.ui;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -8,10 +9,12 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+
 
 import downloader.fc.Downloader;
 
@@ -24,6 +27,7 @@ public class Main extends JFrame implements PropertyChangeListener, ActionListen
 //	ArrayList<Downloader> dl;
 	ArrayList<ThreaDownload> l_threads;
 	JButton add;
+//	JButton play_pause;
 	JTextField text;
 	
 	public Main(String title) {
@@ -54,6 +58,8 @@ public class Main extends JFrame implements PropertyChangeListener, ActionListen
 		window_add.add(add);
 		
 		add.addActionListener(this);
+		
+		
 		
 		//dl = new Downloader("http://iihm.imag.fr/blanch/RICM4/IHM/tPs/3-notification/downloader.src.tgz");
 /*		dl = new Downloader("http://iihm.imag.fr/blanch/RICM4/IHM/tps/1-grapher-swing/grapher.src.tgz");
@@ -112,15 +118,50 @@ public class Main extends JFrame implements PropertyChangeListener, ActionListen
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 
+		JPanel p_barre = new JPanel();
+		JPanel p_boutons = new JPanel();
+		JPanel p_barre_boutons = new JPanel();
+		JLabel label = new JLabel(text.getText());
+		
+		JButton remove = new JButton(" X ");
+		JButton play_pause = new JButton(" || ");
+//		Layout layout = new Layout();
+
+		
 		JProgressBar new_jpb = new JProgressBar();
 		new_jpb.setString("0%");
 		new_jpb.setStringPainted(true);
-		window_barres.add(new_jpb);
+		
+		
+		p_barre_boutons.setLayout(new BorderLayout());
+		p_barre_boutons.add(p_barre, BorderLayout.CENTER);
+		p_barre_boutons.add(p_boutons, BorderLayout.EAST);
+
+		p_barre.setLayout(new BorderLayout());
+		p_barre.add(label, BorderLayout.NORTH);
+		p_barre.add(new_jpb, BorderLayout.SOUTH);
+		
+		p_boutons.setLayout(new BorderLayout());
+		p_boutons.add(play_pause, BorderLayout.WEST);
+		p_boutons.add(remove, BorderLayout.EAST);
+		
+//		window_barres.add(new_jpb);
+		
+		
+
+		window_barres.add(p_barre_boutons);
 		
 		ThreaDownload new_thread = new ThreaDownload(new Downloader(text.getText()), new_jpb);
 		l_threads.add(new_thread);
+
+		
+		play_pause.addActionListener(new_thread.li);
+		remove.addActionListener(new_thread.li);
 		
 		new_thread.run();
+		
+		this.pack();
+		this.repaint();
 		
 
 /*		JProgressBar new_jpb = new JProgressBar();

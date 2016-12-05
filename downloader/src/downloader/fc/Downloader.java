@@ -2,6 +2,8 @@ package downloader.fc;
 
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.SwingWorker;
 
@@ -19,6 +21,7 @@ import java.beans.PropertyChangeListener;
 public class Downloader extends SwingWorker<Object, Integer> {
 	public static final int CHUNK_SIZE = 1024;
 	
+	ReentrantLock lock = new ReentrantLock();
 	URL url;
 	int content_length;
 	BufferedInputStream in;
@@ -57,7 +60,9 @@ public class Downloader extends SwingWorker<Object, Integer> {
 		int size = 0;
 		int count = 0;
 		
+		
 		while(count >= 0) {
+			lock.lock();
 			try{
 				out.write(buffer, 0, count);
 			}
@@ -65,6 +70,7 @@ public class Downloader extends SwingWorker<Object, Integer> {
 			
 			size += count;
 			setProgress(100*size/content_length);
+			lock.unlock();
 			Thread.sleep(1000);
 			
 			try{
@@ -106,5 +112,10 @@ public class Downloader extends SwingWorker<Object, Integer> {
 	protected Object doInBackground() throws Exception {
 		download();
 		return null;
+	}
+	
+	public ReentrantLock get_lock()
+	{
+		return lock;
 	}
 }
